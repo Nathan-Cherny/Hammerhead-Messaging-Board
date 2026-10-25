@@ -1,3 +1,23 @@
+<!-- da form submission -->
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = htmlspecialchars($_POST['title']);
+    $msg = htmlspecialchars($_POST['msg']);
+    $author = htmlspecialchars($_POST['author']);
+
+    $db = new PDO('sqlite:my_database.db');
+
+    $sql = "INSERT INTO messages (title, msg, author) VALUES (:title, :msg, :author)";
+    $stmt = $db->prepare($sql);
+
+    $stmt->execute([
+        ':title' => $title,
+        ':msg' => $msg,
+        ':author' => $author
+    ]);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +31,10 @@
 
         html {
             background-color: rgb(0, 0, 255);
+        }
+
+        * {
+            font-family: 'Comic Sans MS';
         }
 
         /* body {
@@ -42,7 +66,7 @@
         }
 
         .main-stuff h1 {
-            background: -webkit-linear-gradient(0deg, #9ff, #39f);
+            background: -webkit-linear-gradient(90deg, #9ff, #06d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -53,15 +77,37 @@
             border: 1px solid white;
         }
 
+        /* da message input */
+
+        .message-input {
+            display: flex;
+            flex-direction: column;
+            border: 2px solid purple;
+            margin: 50px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: orange;
+        }
+
+        .message-input * {
+            margin: 5px 20px;
+        }
+
+        .message-input textarea {
+            color: black;
+        }
+
+
         /* da messages */
 
         .forum {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.25);
             padding: 5px;
         }
 
         .message {
             background-image: linear-gradient(to bottom, rgba(255, 0, 0, 0.75), rgba(255, 255, 0, 0.75));
+            background-color: rgba(0, 0, 0, 0);
             border: 5px solid black;
             display: flex;
             flex-direction: row;
@@ -85,23 +131,9 @@
             display: flex;
             margin: 0;
             align-items: center;
+            font-size: 15px;
+            padding: 10px 0px;
             justify-content: center;
-        }
-
-        .message .title {
-            font-size: 32px;
-        }
-
-        .message .msg {
-            font-size: 18px
-        }
-
-        .message .author {
-            font-size: 18px
-        }
-
-        .message .created_at {
-            font-size: 18px
         }
     </style>
 </head>
@@ -112,15 +144,24 @@
         <div class="main-stuff">
             <div class="tenor-gif-embed gif" data-postid="24834746" data-share-method="host" data-aspect-ratio="1.09215" data-width="100%"><a href="https://tenor.com/view/the-el-hammerhead-shark-shark-gif-24834746">The El Hammerhead Shark GIF</a>from <a href="https://tenor.com/search/the+el-gifs">The El GIFs</a></div>
             <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-            <h1>Hammerhead Shark Messaging Forum!!</h1>
+            <h1>Hammerhead Records Messaging Forum!!</h1>
             <div class="tenor-gif-embed gif" data-postid="5148062" data-share-method="host" data-aspect-ratio="1" data-width="100%"><a href="https://tenor.com/view/shark-funny-computer-gif-5148062">Shark Funny GIF</a>from <a href="https://tenor.com/search/shark-gifs">Shark GIFs</a></div>
             <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
         </div>
         <p>Talk about stuff here</p>
-        <button>Write a message!</button>
+
+        <form class="message-input" action="index.php" method="POST">
+            <h3 style="color: black">Write a message!</h3>
+            <input name="title" type="text" placeholder="title" />
+            <input name="author" type="text" placeholder="who are you?" />
+            <textarea name="msg" placeholder="whatcha gonna say to da world??">
+            </textarea>
+            <input type="submit" value="Submit!!" />
+        </form>
     </div>
 
     <hr />
+
 
     <div class="forum">
         <div class="message message-label">
@@ -143,18 +184,6 @@
 
             $db->exec($sql);
 
-            $sql = "INSERT INTO messages (title, msg, author) VALUES (:title, :msg, :author)";
-            $stmt = $db->prepare($sql);
-
-            $title = 'Hey';
-            $msg = 'woah';
-            $author = "me";
-
-            $stmt->execute([
-                ':title' => $title,
-                ':msg' => $msg,
-                ':author' => $author
-            ]);
 
             $query = "SELECT * FROM messages";
             foreach ($db->query($query) as $row) {
