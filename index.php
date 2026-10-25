@@ -95,6 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .message-input textarea {
             color: black;
+            resize:vertical;
+            min-height: 40px;
+            box-sizing: border-box;
+            padding: 8px;
         }
 
 
@@ -154,8 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3 style="color: black">Write a message!</h3>
             <input name="title" type="text" placeholder="title" />
             <input name="author" type="text" placeholder="who are you?" />
-            <textarea name="msg" placeholder="whatcha gonna say to da world??">
-            </textarea>
+            <textarea name="msg" placeholder="whatcha gonna say to da world??"></textarea>
             <input type="submit" value="Submit!!" />
         </form>
     </div>
@@ -186,7 +189,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             $query = "SELECT * FROM messages";
-            foreach ($db->query($query) as $row) {
+            $rows = $db->query($query)->fetchAll();
+            foreach (array_reverse($rows) as $row) {
                 echo '<div class="message">
                 <h1 class="title">' . $row[1] . '</h1>
                 <p class="msg">' . mb_strimwidth($row[2], 0, 20, "click to see full msg") . '</p>
