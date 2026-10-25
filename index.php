@@ -193,7 +193,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             foreach (array_reverse($rows) as $row) {
                 echo '<div class="message">
                 <h1 class="title">' . $row[1] . '</h1>
-                <p class="msg">' . mb_strimwidth($row[2], 0, 20, "click to see full msg") . '</p>
+                <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 20, "hover over to see full msg") . '</p>
                 <p class="author">' . $row[3] . '</p>
                 <p class="created_at">' . $row[4] . '</p>
 
