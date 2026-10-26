@@ -138,6 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 15px;
             padding: 10px 0px;
             justify-content: center;
+            max-width: 25%;
+            overflow-x:hidden;
         }
     </style>
 </head>
