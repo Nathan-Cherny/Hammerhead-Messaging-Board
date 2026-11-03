@@ -147,7 +147,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             max-width: 25%;
             overflow-x: hidden;
         }
+
+        /* da replies */
+
+        .reply {
+            display: none
+        }
     </style>
+
+    <script>
+        function toggleReplies(message) {
+            const id = parseInt(message.id)
+            let replies = document.getElementsByName("reply" + id)
+            message.classList.toggle("replyShowing")
+
+            const repliesShowing = message.classList.contains("replyShowing")
+            for (let replyMessage of replies) {
+                replyMessage.style.display = (repliesShowing) ? "flex" : "none"
+            }
+
+        }
+    </script>
 </head>
 
 <body>
@@ -190,10 +210,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <select name="parent_id" placeholder="whatcha gonna say to da world??">
                 <option style="color: lightgray" value="null">Who are ya replyin' to?? (leave it as this if ur not replying to anyone :p)</option>
                 <?php
-                $query = "SELECT * FROM messages";
+                $query = "SELECT * FROM messages WHERE parent_id='null'";
                 $rows = $db->query($query)->fetchAll();
                 foreach (array_reverse($rows) as $row) {
-                    echo '<option value='. $row[0] . '>"' . $row[1] . '"' . " by " . $row[2] . ' </option>';
+                    echo '<option value=' . $row[0] . '>"' . $row[1] . '"' . " by " . $row[2] . ' </option>';
                 }
                 ?>
             </select>
@@ -216,13 +236,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = "SELECT * FROM messages";
             $rows = $db->query($query)->fetchAll();
             foreach (array_reverse($rows) as $row) {
-                echo '<div class="message">
-                <h1 class="title" title="ID: ' . $row[0] . ' PID: ' . $row[4] .'">' . $row[1] . '</h1>
-                <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
-                <p class="author">' . $row[3] . '</p>
-                <p class="created_at">' . $row[5] . '</p>
-            </div>
-            ';
+                if ($row[4] != "null") {
+                    echo '<div class="message reply" name="reply' . $row[4] . '">
+                    <h1 class="title" title="ID: ' . $row[0] . ' PID: ' . $row[4] . '">' . $row[1] . '</h1>
+                    <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
+                    <p class="author">' . $row[3] . '</p>
+                    <p class="created_at">' . $row[5] . '</p>
+                </div>
+                ';
+                } else {
+                    echo '<div class="message"  onclick="toggleReplies(this)" id="' . $row[0] . '">
+                    <h1 class="title" title="ID: ' . $row[0] . ' PID: ' . $row[4] . '">' . $row[1] . '</h1>
+                    <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
+                    <p class="author">' . $row[3] . '</p>
+                    <p class="created_at">' . $row[5] . '</p>
+                </div>
+                ';
+                }
             }
         } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
