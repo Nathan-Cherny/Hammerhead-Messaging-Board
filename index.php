@@ -134,9 +134,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .message-label * {
-            font-size: 250% !important;
+            font-size: 125% !important;
         }
-
+        
         .message * {
             flex: 1;
             border: 1px solid black;
