@@ -151,7 +151,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         /* da replies */
 
         .reply {
-            display: none
+            display: none;
+            background-color: gray;
+            background-image: none;
+            background-color: gray;
         }
     </style>
 
@@ -167,10 +170,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
         }
+
+        function figureOutReplies() {
+            let allNotReplies = document.querySelectorAll('.message:not(.reply):not(.message-label)');
+            allNotReplies = [...allNotReplies]
+            for (let message of allNotReplies) {
+                let replies = document.getElementsByName("reply" + message.id)
+                if (replies.length > 0) {
+                    let firstReply = replies[replies.length - 1]
+                    for (let replyMessage of [...replies].reverse()) {
+                        message.before(replyMessage)
+                    }
+                    firstReply.before(message)  
+                }
+
+                document.getElementById("nreplies" + message.id).innerHTML = replies.length
+            }
+
+        }
     </script>
 </head>
 
-<body>
+<body onload="figureOutReplies()">
 
     <?php
     try {
@@ -230,6 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="msg">Message</p>
             <p class="author">Author</p>
             <p class="created_at">Created At</p>
+            <p class="replies">Replies / Replying To</p>
         </div>
         <?php
         try {
@@ -242,6 +264,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
                     <p class="author">' . $row[3] . '</p>
                     <p class="created_at">' . $row[5] . '</p>
+                    <p class="replyingTo">' . $row[4] . '</p>
                 </div>
                 ';
                 } else {
@@ -250,6 +273,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
                     <p class="author">' . $row[3] . '</p>
                     <p class="created_at">' . $row[5] . '</p>
+                    <p class="numreplies" id="nreplies' . $row[0] . '"></p>
                 </div>
                 ';
                 }
