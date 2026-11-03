@@ -123,12 +123,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             flex-direction: row;
             align-items: stretch;
             justify-content: space-around;
+            cursor: pointer;
             text-align: center;
         }
 
         .message-label {
             background-image: none !important;
             background-color: green !important;
+            cursor:auto;
         }
 
         .message-label * {
@@ -154,6 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: none;
             background-color: gray;
             background-image: none;
+            cursor:auto;
             background-color: gray;
         }
     </style>
@@ -181,12 +184,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     for (let replyMessage of [...replies].reverse()) {
                         message.before(replyMessage)
                     }
-                    firstReply.before(message)  
+                    firstReply.before(message)
                 }
 
-                document.getElementById("nreplies" + message.id).innerHTML = replies.length
+                document.getElementById("nreplies" + message.id).innerHTML = `${replies.length} Replies
+                ${(replies.length > 4) ? "... wow, you're popular!" : ""}`
             }
 
+            let allReplyingTo = document.getElementsByClassName("replyingTo")
+            for (let whatId of allReplyingTo) {
+                let whatReplyingTo = document.getElementById(whatId.innerHTML)
+                let titleOfWhatReplyingTo = whatReplyingTo.firstElementChild.innerHTML
+                whatId.innerHTML = `Replying To '${titleOfWhatReplyingTo}'`
+            }
         }
     </script>
 </head>
@@ -250,8 +260,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h1 class="title">Title</h1>
             <p class="msg">Message</p>
             <p class="author">Author</p>
-            <p class="created_at">Created At</p>
             <p class="replies">Replies / Replying To</p>
+            <p class="created_at">Created At</p>
         </div>
         <?php
         try {
@@ -260,20 +270,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             foreach (array_reverse($rows) as $row) {
                 if ($row[4] != "null") {
                     echo '<div class="message reply" name="reply' . $row[4] . '">
-                    <h1 class="title" title="ID: ' . $row[0] . ' PID: ' . $row[4] . '">' . $row[1] . '</h1>
+                    <h1 class="title" title="id: ' . $row[0] . ' parent_id: ' . $row[4] . '">' . $row[1] . '</h1>
                     <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
                     <p class="author">' . $row[3] . '</p>
-                    <p class="created_at">' . $row[5] . '</p>
                     <p class="replyingTo">' . $row[4] . '</p>
+                    <p class="created_at">' . $row[5] . '</p>
                 </div>
                 ';
                 } else {
                     echo '<div class="message"  onclick="toggleReplies(this)" id="' . $row[0] . '">
-                    <h1 class="title" title="ID: ' . $row[0] . ' PID: ' . $row[4] . '">' . $row[1] . '</h1>
+                    <h1 class="title" title="id: ' . $row[0] . ' parent_id: ' . $row[4] . '">' . $row[1] . '</h1>
                     <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
                     <p class="author">' . $row[3] . '</p>
-                    <p class="created_at">' . $row[5] . '</p>
                     <p class="numreplies" id="nreplies' . $row[0] . '"></p>
+                    <p class="created_at">' . $row[5] . '</p>
                 </div>
                 ';
                 }
