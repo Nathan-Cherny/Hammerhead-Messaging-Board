@@ -4,16 +4,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = htmlspecialchars($_POST['title']);
     $msg = htmlspecialchars($_POST['msg']);
     $author = htmlspecialchars($_POST['author']);
+    $parent_id = htmlspecialchars($_POST["parent_id"]);
 
     $db = new PDO('sqlite:my_database.db');
 
-    $sql = "INSERT INTO messages (title, msg, author) VALUES (:title, :msg, :author)";
+    $sql = "INSERT INTO messages (title, msg, author, parent_id) VALUES (:title, :msg, :author, :parent_id)";
     $stmt = $db->prepare($sql);
 
     $stmt->execute([
         ':title' => $title,
         ':msg' => $msg,
-        ':author' => $author
+        ':author' => $author,
+        ':parent_id' => $parent_id
     ]);
 }
 ?>
@@ -99,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .message-input textarea {
             color: black;
-            resize:vertical;
+            resize: vertical;
             min-height: 40px;
             box-sizing: border-box;
             padding: 8px;
@@ -143,12 +145,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px 0px;
             justify-content: center;
             max-width: 25%;
-            overflow-x:hidden;
+            overflow-x: hidden;
         }
     </style>
 </head>
 
 <body>
+
+    <?php
+    try {
+        $db = new PDO('sqlite:my_database.db');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS messages(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            msg TEXT NOT NULL,
+            author TEXT,
+            parent_id INTEGER DEFAULT null,
+            created_at TEXT DEFAULT current_timestamp,
+            FOREIGN KEY (parent_id) REFERENCES messages (id) ON DELETE CASCADE
+        )';
+
+        $db->exec($sql);
+    } catch (PDOException $e) {
+        echo "Connection failed: " . $e->getMessage();
+    }
+    ?>
 
     <div class="main-title">
         <div class="main-stuff">
@@ -165,6 +187,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input name="title" type="text" placeholder="title" />
             <input name="author" type="text" placeholder="who are you?" />
             <textarea name="msg" placeholder="whatcha gonna say to da world??"></textarea>
+            <select name="parent_id" placeholder="whatcha gonna say to da world??">
+                <option style="color: lightgray" value="null">Who are ya replyin' to?? (leave it as this if ur not replying to anyone :p)</option>
+                <?php
+                $query = "SELECT * FROM messages";
+                $rows = $db->query($query)->fetchAll();
+                foreach (array_reverse($rows) as $row) {
+                    echo '<option value='. $row[0] . '>"' . $row[1] . '"' . " by " . $row[2] . ' </option>';
+                }
+                ?>
+            </select>
             <input type="submit" value="Submit!!" />
         </form>
     </div>
@@ -181,28 +213,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <?php
         try {
-            $db = new PDO('sqlite:my_database.db');
-
-            $sql = 'CREATE TABLE IF NOT EXISTS messages(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            msg TEXT NOT NULL,
-            author TEXT,
-            created_at TEXT DEFAULT current_timestamp
-        )';
-
-            $db->exec($sql);
-
-
             $query = "SELECT * FROM messages";
             $rows = $db->query($query)->fetchAll();
             foreach (array_reverse($rows) as $row) {
                 echo '<div class="message">
-                <h1 class="title">' . $row[1] . '</h1>
+                <h1 class="title" title="ID: ' . $row[0] . ' PID: ' . $row[4] .'">' . $row[1] . '</h1>
                 <p class="msg"' . 'title=\'' . $row[2] . '\'>' . mb_strimwidth($row[2], 0, 150, "hover over to see full msg") . '</p>
                 <p class="author">' . $row[3] . '</p>
-                <p class="created_at">' . $row[4] . '</p>
-
+                <p class="created_at">' . $row[5] . '</p>
             </div>
             ';
             }
