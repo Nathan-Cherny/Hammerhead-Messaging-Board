@@ -31,28 +31,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         html {
             background-color: rgb(0, 0, 255);
+            background-image: url(shark.png);
+            background-size: 250px 250px;
+            background-repeat: repeat;
         }
 
         * {
             font-family: 'Comic Sans MS';
         }
 
-        /* body {
-            background-image: url(shark.png);
-            background-size: 250px 250px;
-            background-repeat: repeat;
-            background-color: rgb(0, 0, 255);
-        } */
+        body {
+            background-color: rgba(0, 0, 255, 0.75);
+            margin: 0;
+            overflow-x: hidden
+        }
 
         /* da main title */
 
         .main-title {
+            padding-top: 10px;
             width: 100%;
             text-align: center;
             color: white;
         }
 
         .main-stuff {
+            background: linear-gradient(90deg, rgb(30, 57, 77), rgb(20, 60, 100));
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -82,11 +86,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .message-input {
             display: flex;
             flex-direction: column;
-            border: 2px solid purple;
+            border: 5px solid purple;
             margin: 50px;
             padding-top: 10px;
             padding-bottom: 10px;
-            background-color: orange;
+            background: linear-gradient(100deg, orange, red);
         }
 
         .message-input * {
@@ -105,8 +109,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         /* da messages */
 
         .forum {
-            background-color: rgba(255, 255, 255, 0.25);
-            padding: 5px;
+            padding: 5px 25px;
+
         }
 
         .message {
