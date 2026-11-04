@@ -263,6 +263,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="about">
             <p>Talk about stuff here</p>
+            <a href="/links.php">What is Hammerhead Records?</a>
             <p id="youare"></p>
         </div>
 
