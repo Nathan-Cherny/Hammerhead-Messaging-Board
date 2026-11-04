@@ -131,13 +131,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .message-label {
             background-image: none !important;
             background-color: green !important;
-            cursor:auto;
+            cursor: auto;
         }
 
         .message-label * {
             font-size: 125% !important;
         }
-        
+
         .message * {
             flex: 1;
             border: 1px solid black;
@@ -157,8 +157,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: none;
             background-color: gray;
             background-image: none;
-            cursor:auto;
+            cursor: auto;
             background-color: gray;
+        }
+
+        /* da about */
+        .about {
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            width: 50%;
+            margin: 15px auto;
+            justify-content: center;
+            flex-direction: column;
         }
     </style>
 
@@ -192,11 +203,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ${(replies.length > 4) ? "... wow, you're popular!" : ""}`
             }
 
+            // onload stuff
+
             let allReplyingTo = document.getElementsByClassName("replyingTo")
             for (let whatId of allReplyingTo) {
                 let whatReplyingTo = document.getElementById(whatId.innerHTML)
                 let titleOfWhatReplyingTo = whatReplyingTo.firstElementChild.innerHTML
                 whatId.innerHTML = `Replying To '${titleOfWhatReplyingTo}'`
+            }
+
+            var youare = localStorage.getItem("username")
+            document.getElementById("youare").innerHTML = (youare) ?
+                `Signed in as '${localStorage.getItem("username")}' <a href="/signup.php">See sign up page</a>` :
+                "<a href='/signup.php'>You aren't signed in! You can do that by clicking here!!!</a>"
+            document.getElementsByName("author")[0].value = youare ?? "Guest"
+
+            var allAuthors = document.getElementsByClassName("author")
+            for (let author of allAuthors) {
+                if (author.innerHTML != "Guest") {
+                    author.style.fontWeight = "bold"
+                } else {
+                    author.style.color = "#444"
+                }
             }
         }
     </script>
@@ -232,12 +260,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="tenor-gif-embed gif" data-postid="5148062" data-share-method="host" data-aspect-ratio="1" data-width="100%"><a href="https://tenor.com/view/shark-funny-computer-gif-5148062">Shark Funny GIF</a>from <a href="https://tenor.com/search/shark-gifs">Shark GIFs</a></div>
             <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
         </div>
-        <p>Talk about stuff here</p>
+
+        <div class="about">
+            <p>Talk about stuff here</p>
+            <p id="youare"></p>
+        </div>
 
         <form class="message-input" action="index.php" method="POST">
             <h3 style="color: black">Write a message!</h3>
             <input name="title" type="text" placeholder="title" />
-            <input name="author" type="text" placeholder="who are you?" />
+            <input style="display:none" name="author" type="text" />
             <textarea name="msg" placeholder="whatcha gonna say to da world??"></textarea>
             <select name="parent_id" placeholder="whatcha gonna say to da world??">
                 <option style="color: lightgray" value="null">Who are ya replyin' to?? (leave it as this if ur not replying to anyone :p)</option>
@@ -245,7 +277,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $query = "SELECT * FROM messages WHERE parent_id='null'";
                 $rows = $db->query($query)->fetchAll();
                 foreach (array_reverse($rows) as $row) {
-                    echo '<option value=' . $row[0] . '>"' . $row[1] . '"' . " by " . $row[2] . ' </option>';
+                    echo '<option value=' . $row[0] . '>"' . $row[1] . '"' . " by " . $row[3] . ' </option>';
                 }
                 ?>
             </select>
@@ -269,6 +301,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = "SELECT * FROM messages";
             $rows = $db->query($query)->fetchAll();
             foreach (array_reverse($rows) as $row) {
+
                 if ($row[4] != "null") {
                     echo '<div class="message reply" name="reply' . $row[4] . '">
                     <h1 class="title" title="id: ' . $row[0] . ' parent_id: ' . $row[4] . '">' . $row[1] . '</h1>
