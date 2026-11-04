@@ -45,7 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         body {
             background-color: rgba(0, 0, 255, 0.75);
             margin: 0;
-            overflow-x: hidden
+            overflow-x: hidden;
+            padding-bottom: 100px;
         }
 
         /* da main title */
