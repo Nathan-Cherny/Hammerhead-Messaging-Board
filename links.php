@@ -1,6 +1,7 @@
 <html>
-    <head>
-        <style>
+
+<head>
+    <style>
         /* da main, stuff */
 
         html {
@@ -143,6 +144,35 @@
             justify-content: center;
             flex-direction: column;
         }
+
+        main {
+            background-color: rgba(255, 255, 255, 0.55);
+            padding: 5px;
+            margin: 0px 10px;
+        }
     </style>
-    </head>
+</head>
+
+<body>
+    <main>
+        <h2 style="text-align: center;">Welcome to Hammerhead Records!!!</h2>
+        <p>Inspired by Chainsaw Records, Hammerhead Records seeks to act as a place for internet savvy peoples, especially those in the Queercore/Punk scenes, to have an effective way to communicate with each other.</p>
+        <p>To faciliate discussion, Hammerhead Records allows you to make messages, reply to people, and create an account to identify yourself. On the sign in page, you can also see a list of people and click on their name to see their messages.</p>
+        <p>If you're interested, head on hover to the <a href="/">main page</a> or the <a href="signup.php">sign in page</a></p>
+        <br />
+        <p>Also, see this list of friendly/similar websites :) happy surfing, sharks!</p>
+        <ul>
+            <li><a href="https://en.wikipedia.org/wiki/Chainsaw_Records">Chainsaw Records</a></li>
+            <li><a href="https://pokemondb.net/pokedex/altaria">The Pokemans (The best one)</a></li>
+            <li><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ?message-for-you=get_rick_rolled_lmao_loser">The Guess Whats</a></li>
+            <li><a href="https://www.nytimes.com/games/wordle/index.html">Words</a></li>
+            <li><a href="about:blank">A Blank Page</a></li>
+            <li><a href="https://www.dragonflycave.com/favorite-list/?favs=FNHZHNCdHYDVD3G8CCABAFGtJeIoCfCoCpDGDPJkCUDkCqAGIvCzAAIMC0IyFUDEDoG0ImJTBPCyGzGEIND5FMCBJSJgGNCIHDBOILI1ItBDAXBRDCBQGCIsG6F3CZI2IRHVCTACDUIqBdJKGLHM">My Favorite Pokemon</a></li>
+            <li><a href="https://github.com/Nathan-Cherny">Git-Hub (10 years early)</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Flipper_(band)">Flipper (fellow fish friends)</a></li>
+        </ul>
+
+    </main>
+</body>
+
 </html>
